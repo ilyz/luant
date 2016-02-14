@@ -48,7 +48,7 @@ class Build():
                 if test_file.endswith(u'.lua'):
                     cmd = u'cat %s >> %s' % (test_file, self.test_path)
                     self.execute(cmd)
-                    cmd = u'echo "\\n" >> %s' % self.test_path
+                    cmd = u'echo >> %s' % self.test_path
                     self.execute(cmd)
 
     # 生成单侧代码
