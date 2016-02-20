@@ -36,11 +36,11 @@ function Key.del(request)
 end
 
 function Key.clear()
-    if self.s then
-        if type(self.s.clear) == 'function' then
-            self.s.clear()
-        end
-    end
+    -- if self.s then
+    --     if type(self.s.clear) == 'function' then
+    --         self.s.clear()
+    --     end
+    -- end
 end
 
 return Key
