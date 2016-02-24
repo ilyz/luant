@@ -30,7 +30,7 @@ function class(classname, super)
         local instance = setmetatable({}, cls)
         instance.class = cls
         if instance.init and type(instance.init) == 'function' then
-            instance.init(self, ...)
+            instance:init(...)
         end
         return instance
     end

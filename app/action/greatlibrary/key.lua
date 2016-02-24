@@ -3,44 +3,41 @@
 -- 简介：大图书馆Key
 
 local Key = Class('app.action.greatlibrary.key')
-local self = nil
 
 -- 依赖
 local Service = lroute.require('app.service.greatlibrary.key')
+local type = type
 
-function Key.init(this)
-    self = this
+function Key.init(self)
     self.s = Service:new()
 end
 
-function Key.exist(request)
-    t = request.args.type
-    k = request.args.key
-    return self.s.exist(t, k)
+function Key.exist(self, request)
+    t = request:assert_get_str('type')
+    k = request:assert_get_str('key')
+    return self.s:exist(t, k)
 end
 
-function Key.get(request)
-    param = table.select(request.args, {'id', 'type', 'key'})
-    return self.s.get(param)
+function Key.get(self, request)
+    param = request:get_args({'id', 'type', 'key'})
+    return self.s:get(param)
 end
 
-function Key.add(request)
-    t = request.args.type
-    k = request.args.key
-    return self.s.add(t, k)
+function Key.add(self, request)
+    t = request:assert_get_str('type')
+    k = request:assert_get_str('key')
+    return self.s:add(t, k)
 end
 
-function Key.del(request)
-    param = table.select(request.args, {'id', 'type', 'key'})
-    return self.s.del(param)
+function Key.del(self, request)
+    param = request:get_args({'id', 'type', 'key'})
+    return self.s:del(param)
 end
 
-function Key.clear()
-    -- if self.s then
-    --     if type(self.s.clear) == 'function' then
-    --         self.s.clear()
-    --     end
-    -- end
+function Key.clear(self)
+    if type(self.s.clear) == 'function' then
+        self.s:clear()
+    end
 end
 
 return Key

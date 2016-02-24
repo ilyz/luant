@@ -3,13 +3,8 @@
 -- 简介：luant测试类
 
 local Test = Class('app.action.luant.test')
-local self = nil
 
-function Test.init(this)
-    self = this
-end
-
-function Test.hello(request)
+function Test.hello(self, request)
     local name = request.get_arg('name')
     if not name then
        name = 'luant'

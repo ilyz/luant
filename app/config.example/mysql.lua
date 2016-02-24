@@ -20,6 +20,10 @@ _M.default = {
 	user = 'root',
 	password = '',
 	database = 'gt_data',
+	-- 连接超时时间，3分钟
+	pool_max_idle_time = 180000,
+	-- 连接池大小，每个工作进程100个
+	pool_size = 100,
 }
 
 -- 结点

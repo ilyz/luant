@@ -3,13 +3,11 @@
 -- 简介：大图书馆Key
 
 local Model = Class('app.model.greatlibrary.key', 'lib.luant.mysql')
-local self = nil
 
-function Model.init(this)
-    self = this
-    self.super.init(self)
-    self.setDatabase('great_library')
-    self.setTable('gl_keys')
+function Model.init(self)
+    self.super:init()
+    self:setDatabase('great_library')
+    self:setTable('gl_keys')
 end
 
 return Model

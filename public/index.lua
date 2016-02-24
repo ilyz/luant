@@ -13,10 +13,10 @@ end
 local function execute()
     local class, func = lroute.assert_get_class_function(ngx.var.uri)
     -- 调用
-    res = func(ngx.ctx.request)
+    res = func(class, ngx.ctx.request)
     -- 释放资源
     if type(class.clear) == 'function' then
-        class.clear()
+        class:clear()
     end
     -- 返回值处理
     if type(res) == 'table' then

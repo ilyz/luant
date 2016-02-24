@@ -3,18 +3,16 @@
 -- 简介：大图书馆Key
 
 local Service = Class('app.service.greatlibrary.key')
-local self = nil
 
 -- 依赖
 local Model = lroute.require('app.model.greatlibrary.key')
 local factory = lroute.require('lib.luant.sql.factory')
-local crc32 = lroute.require('lib.crc32')
+local crc32 = string.crc32
 
 -- gl_keys
 -- id h_type h_key type key created_at updated_at
 
-function Service.init(this)
-    self = this
+function Service.init(self)
     self.m = Model:new()
 end
 
@@ -23,63 +21,59 @@ local function _getFields()
 end
 
 local function _getCondition(t, k)
-    condition = {}
+    local condition = {}
     if t then
-        condition.h_type = string.crc32(t)
+        condition.h_type = crc32(t)
         condition.type = t
     end
     if k then
-        condition.h_key = string.crc32(k)
+        condition.h_key = crc32(k)
         condition.key = k
     end
     return condition
 end
 
-function Service.exist(t, k)
-    condition = _getCondition(t, k)
-    if self.m.getOne(_getFields(), condition) then
-        return true
-    else
-        return false
-    end
+function Service.exist(self, t, k)
+    local condition = _getCondition(t, k)
+    return self.m:getCount(condition)
 end
 
-function Service.add(t, k)
-    if not self.exist(t, k) then
-        fields = {
-            ['h_type'] = string.crc32(t),
-            ['h_key'] = string.crc32(k),
+function Service.add(self, t, k)
+    if self:exist(t, k) == 0 then
+        local fields = {
+            ['h_type'] = crc32(t),
+            ['h_key'] = crc32(k),
             ['type'] = t,
             ['key'] = k,
         }
-        return self.m.insert(fields)
+        return self.m:insert(fields)
     else
         lexception.throw_add_error('纪录已存在')
     end
 end
 
-function Service.del(param)
+function Service.del(self, param)
     -- 删除单条
     if param.id then
-        condition = {['id']=param.id}
-        return self.m.delete(condition)
+        local condition = {['id']=param.id}
+        return self.m:delete(condition)
     end
 
     -- 删除多条
-    condition = _getCondition(param.type, param.key)
-    return self.m.delete(condition)
+    local condition = _getCondition(param.type, param.key)
+    return self.m:delete(condition)
 end
 
-function Service.getOne(id)
-    fields = _getFields()
-    condition = {['id'] = id}
-    return self.m.getOne(fields, condition)
+function Service.getOne(self, id)
+    local fields = _getFields()
+    local condition = {['id'] = id}
+    return self.m:getOne(fields, condition)
 end
 
-function Service.get(param)
+function Service.get(self, param)
     -- 单条
     if param.id then
-        return self.getOne(param.id)
+        return self:getOne(param.id)
     end
 
     -- fields
@@ -98,8 +92,8 @@ function Service.get(param)
     local append = {[factory.LIMIT]={offset, limit}}
     
     -- result
-    local total = self.m.getCount(condition)
-    local res = self.m.getList(fields, condition, append)
+    local total = self.m:getCount(condition)
+    local res = self.m:getList(fields, condition, append)
     return {
         err_no = 0,
         total = total,
@@ -109,9 +103,9 @@ function Service.get(param)
     }
 end
 
-function Service.clear()
+function Service.clear(self)
     if type(self.m.clear) == 'function' then
-        self.m.clear()
+        self.m:clear()
     end
 end
 
