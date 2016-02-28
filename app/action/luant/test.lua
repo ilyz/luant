@@ -5,7 +5,7 @@
 local Test = Class('app.action.luant.test')
 
 function Test.hello(self, request)
-    local name = request.get_arg('name')
+    local name = request:get_arg('name')
     if not name then
        name = 'luant'
     end

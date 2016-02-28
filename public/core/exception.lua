@@ -6,8 +6,13 @@
 
 local Exception = {}
 
+--依赖
+local tostring = tostring
+local json_encode = json.json_encode
+local strfromat = string.format
+
 function _throw(err_no, err_msg)
-	res = json.json_encode({err_no=err_no, err_msg=err_msg})
+	res = json_encode({err_no=err_no, err_msg=err_msg})
 	if not UNIT_TEST then
 		ngx.say(res)
 		ngx.exit(0)
@@ -21,7 +26,7 @@ function Exception.success(t)
 		if not t.err_no then
 			t.err_no = 0
 		end
-		ngx.say(json.json_encode(t))
+		ngx.say(json_encode(t))
 	end
 	ngx.exit(0)
 end
@@ -49,60 +54,60 @@ end
 
 -- 参数相关
 function Exception.throw_param_error(k, v)
-	return _throw(201, string.format('参数：%s[%s]非法', k, v))
+	return _throw(201, strfromat('参数：%s[%s]非法', k, tostring(v)))
 end
 
 function Exception.throw_json_illegal(v)
-	return _throw(202, string.format('JSON[%s]非法', v))
+	return _throw(202, strfromat('JSON[%s]非法', tostring(v)))
 end
 
 function Exception.throw_uri_illegal(p)
-	return _throw(203, string.format('访问路径[%s]非法', v))
+	return _throw(203, strfromat('访问路径[%s]非法', tostring(v)))
 end
 
 -- 数据操作相关
 function Exception.throw_add_error(err_msg)
-	return _throw(301, '添加纪录失败：' .. err_msg)
+	return _throw(301, '添加纪录失败：' .. tostring(err_msg))
 end
 
 function Exception.throw_update_error(err_msg)
-	return _throw(302, '更新纪录失败：' .. err_msg)
+	return _throw(302, '更新纪录失败：' .. tostring(err_msg))
 end
 
 function Exception.throw_delete_error(err_msg)
-	return _throw(303, '删除纪录失败：' .. err_msg)
+	return _throw(303, '删除纪录失败：' .. tostring(err_msg))
 end
 
 function Exception.throw_assemble_error(err_msg)
-	return _throw(304, '组装SQL出错：' .. err_msg)
+	return _throw(304, '组装SQL出错：' .. tostring(err_msg))
 end
 
 function Exception.throw_table_error(t)
-	return _throw(305, string.format('数据表[%s]非法', t))
+	return _throw(305, strfromat('数据表[%s]非法', tostring(t)))
 end
 
 function Exception.throw_sql_error(sql, err)
-	return _throw(306, string.format('sql[%s]出错，错误信息[%s]', sql, err))
+	return _throw(306, strfromat('sql[%s]出错，错误信息[%s]', tostring(sql), tostring(err)))
 end
 
 -- 文件读取相关
 function Exception.throw_config_error(file)
-	return _throw(401, string.format('配置文件[%s]加载失败', file))
+	return _throw(401, strfromat('配置文件[%s]加载失败', tostring(file)))
 end
 
 function Exception.throw_require_error(file)
-	return _throw(402, string.format('文件[%s]加载失败', file))
+	return _throw(402, strfromat('文件[%s]加载失败', tostring(file)))
 end
 
 -- 系统加载相关
 -- 类加载失败
 function Exception.throw_load_class_error(class)
-	return _throw(501, string.format('类[%s]加载失败', class))
+	return _throw(501, strfromat('类[%s]加载失败', tostring(class)))
 end
 
 -- 函数加载失败
 function Exception.throw_load_func_error(func)
-	return _throw(502, string.format('函数[%s]加载失败', func))
+	return _throw(502, strfromat('函数[%s]加载失败', tostring(func)))
 end
 
 -- 内部错误
